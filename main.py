@@ -1,5 +1,10 @@
-import animator
+import importlib
 import ui
+import animator
+
+# À supprimer avant de remettre
+importlib.reload(animator)
+importlib.reload(ui)
 
 
 def main():
