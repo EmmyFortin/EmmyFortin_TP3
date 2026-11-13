@@ -6,8 +6,13 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLineEdit,
     QLabel,
+    QGroupBox,
+    QSpinBox,
+    QDoubleSpinBox,
     QGridLayout
 )
+from PySide6.QtCore import Qt
+import animator
 
 
 class RandomAnimatorGenerator(QWidget):
@@ -15,21 +20,94 @@ class RandomAnimatorGenerator(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Random Animator Generator")
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(450)
+        self.setMinimumHeight(750)
         self.create_ui()
 
+    def create_parameter_group(self, parameter_group_title, parameter_names):
+
+        group_box = QGroupBox(parameter_group_title)
+
+        # Set le layout
+        group_layout = QGridLayout(group_box)
+
+        for element, (name, values) in enumerate(parameter_names.items()):
+
+            label = QLabel(name)
+            spinbox = QSpinBox()
+
+            spinbox.setFixedSize(65, 30)
+
+            # Set les max et min des valeurs par rapport à celles attribuer dans le dict de groups
+            spinbox.setRange(values[0], values[1])
+
+            # Valeur par défaut des spinboxes
+            spinbox.setValue(values[2])
+
+            # Nombre de rangé et de colonnes 
+            row = element // 3
+            col = element % 3
+
+            # Row layout pour avoir label et spinbox ensemble sur la même cellule horizontal
+            row_layout = QHBoxLayout()
+            row_layout.addWidget(label)
+            row_layout.addWidget(spinbox)
+
+            group_layout.addLayout(row_layout, row, col, Qt.AlignCenter)
+            self.spinboxes[f"{parameter_group_title}_{name}"] = spinbox
+
+        # Animation timing a une plus petite box jsp si c'est la meilleure façon de faire ça mais sa fonctionne
+        if parameter_group_title == "Animation Timing" :
+            group_box.setFixedHeight(100)
+
+        return group_box
+
+
     def create_ui(self):
-        layout = QVBoxLayout(self)
 
-        # Grid layout
-        grid_layout = QGridLayout()
+        layout = QGridLayout(self)
 
-        # Animation Timing
-        grid_layout.addWidget(QLabel("Animation Timing"),0,0)
+        # Création dictionnaire des spinbox
+        self.spinboxes = {}
+
+        # Dictionnaire des groups box
+        # Donne les noms des groupes et des paramètres
+        # Puis défini les valeur [Min, Max, Defaut]
+        groups = {
+            "Animation Timing" : {
+                "Duration (Frames):": [24, 1000, 100],
+                "Step (Frames):":[1, 500, 30]
+            },
+
+            "Translate Parameters" : {
+                "min x:":[-1000, 1000, -5], "min y:":[-1000, 1000, -5], "min z:":[-1000, 1000, -5],
+                "max x:":[-1000, 1000, 5], "max y:":[-1000, 1000, 5], "max z:":[-1000, 1000, 5]
+            },
+
+            "Rotate Parameters" : {
+                "min x:":[-360, 360, -180], "min y:":[-360, 360, -180], "min z:":[-360, 360, -180],
+                "max x:":[-360, 360, 180], "max y:":[-360, 360, 180], "max z:":[-360, 360, 180]
+            },
+
+            "Scale Parameters" : {
+                "min x:":[1, 500, 1], "min y:":[1, 500, 1], "min z:":[1, 500, 1],
+                "max x:":[1, 500, 2], "max y:":[1, 500, 2], "max z:":[1, 500, 2]
+            }
+        }
+
+        for element, (parameter_group_title, names) in enumerate(groups.items()):
+            group_box = self.create_parameter_group(parameter_group_title, names)
+            layout.addWidget(group_box, element, 0)
+
+        # Empeche le step de dépasser la duration
+        duration = self.spinboxes["Animation Timing_Duration (Frames):"]
+        step = self.spinboxes["Animation Timing_Step (Frames):"]
+        duration.valueChanged.connect(step.setMaximum)
+        step.setMaximum(duration.value())
 
 
+        self.create_button = QPushButton("Generate")
+        self.create_button.clicked.connect(animator.GenerateRandomAnimation)
 
-        self.create_button = QPushButton("Create")
-
-        layout.addLayout(grid_layout)
+        #layout.addLayout(grid_layout)
         layout.addWidget(self.create_button)
