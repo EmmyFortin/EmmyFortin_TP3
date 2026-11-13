@@ -54,6 +54,7 @@ class RandomAnimatorGenerator(QWidget):
             row_layout.addWidget(spinbox)
 
             group_layout.addLayout(row_layout, row, col, Qt.AlignCenter)
+            # Création de la strcture des noms des paramètres
             self.spinboxes[f"{parameter_group_title}_{name}"] = spinbox
 
         # Animation timing a une plus petite box jsp si c'est la meilleure façon de faire ça mais sa fonctionne
