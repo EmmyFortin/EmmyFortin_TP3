@@ -62,6 +62,17 @@ class RandomAnimatorGenerator(QWidget):
 
         return group_box
 
+    def send_parameters_value(self):
+        """Fonction qui renvoye les valeurs des paramètres à animator.py."""
+
+        # Liste des parametres
+        parameters = {}
+
+        for name, spinbox in self.spinboxes.items():
+            parameters[name] = spinbox.value()
+
+        animator.generate_random_animation(parameters)
+
 
     def create_ui(self):
 
@@ -107,7 +118,12 @@ class RandomAnimatorGenerator(QWidget):
 
 
         self.create_button = QPushButton("Generate")
-        self.create_button.clicked.connect(animator.GenerateRandomAnimation)
+        self.create_button.clicked.connect(self.send_parameters_value)
 
-        #layout.addLayout(grid_layout)
         layout.addWidget(self.create_button)
+
+
+
+
+
+        
