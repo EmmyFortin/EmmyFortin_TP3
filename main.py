@@ -11,8 +11,9 @@ import importlib
 import ui
 import animator
 
-importlib.reload(animator)
 importlib.reload(ui)
+importlib.reload(animator)
+
 
 
 def main():

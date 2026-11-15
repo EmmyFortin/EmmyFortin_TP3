@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QSpinBox,
     QDoubleSpinBox,
+    QMessageBox,
     QGridLayout
 )
 from PySide6.QtCore import Qt
@@ -62,9 +63,14 @@ class RandomAnimatorGenerator(QWidget):
             group_box.setFixedHeight(100)
 
         return group_box
+    
+    def warning_message(self):
+        """Fonction qui affiche un message d'avertissement."""
+        QMessageBox.warning(self, "WARNING", "Please select at least one object in the outliner.")
+
 
     def send_parameters_value(self):
-        """Fonction qui renvoye les valeurs des paramètres à animator.py."""
+        """Fonction qui donne en paramètres les valeurs des paramètres des spinboxes et la fonction warning_message à animator.py."""
 
         # Liste des parametres
         parameters = {}
@@ -72,7 +78,13 @@ class RandomAnimatorGenerator(QWidget):
         for name, spinbox in self.spinboxes.items():
             parameters[name] = spinbox.value()
 
-        animator.generate_random_animation(parameters)
+        # Appelle la fonction generate random animation dans animator et lui passe la liste en parametres
+        animator.generate_random_animation(parameters, self.warning_message)
+        QMessageBox.information(
+        self,
+        "Animation Generated",
+        "Animation generated successfully."
+        )
 
 
     def create_ui(self):
@@ -119,9 +131,11 @@ class RandomAnimatorGenerator(QWidget):
 
 
         self.create_button = QPushButton("Generate")
+        #self.create_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.create_button.clicked.connect(self.send_parameters_value)
 
         layout.addWidget(self.create_button)
+
 
 
 
