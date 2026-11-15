@@ -33,6 +33,13 @@ def generate_random_animation(parameters, message):
         # Pour chaque objet sélectionné
         for object in objects:
 
+            # Supprmier les anciens keyframes
+            cmds.cutKey(
+                object,
+                attribute=["translate","rotate","scale"],
+                clear=True
+            )
+
             # Liste pour conserver les valeurs de départ du 1er keyframe
             first_keyframe_value = {}
 
@@ -79,12 +86,13 @@ def generate_random_animation(parameters, message):
     finally:
         # Fin du Undo
         cmds.undoInfo(closeChunk=True)
+
     print(cmds.undoInfo(query=True, undoName=True))
-    message("done")
-    # cmds.outlinerEditor("outlinerPanel1", edit=True, refresh=True)
 
     # Jouer l'animation (trouver comment bien looper)
-    # cmds.play(forward = True)
+    cmds.play(forward = True)
+
+    #message("done")
 
 
 def get_objects():
