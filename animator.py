@@ -2,28 +2,29 @@ import random
 import ui
 from maya import cmds
 
-def generate_random_animation(parameters, warning_message):
+
+def generate_random_animation(parameters, message):
     """Fonction qui créer l'animation random"""
 
     # Début de l'animation au keyframe 0
     first_keyframe = 0
-   
+
     # Récupération de la valeur des paramètres duration et step
     duration = parameters["Animation Timing_Duration (Frames):"]
     step = parameters["Animation Timing_Step (Frames):"]
 
-    # Récupère les objets sélectionnés 
+    # Récupère les objets sélectionnés
     objects = get_objects()
 
     # S'il n'y a pas d'objet sélectionné on appelle warning_message de ui.py
     if not objects:
-        warning_message()
+        message("warning")
         return
 
     # Pour CTRL + Z, mets les modifications dans le même Undo
     cmds.undoInfo(openChunk=True, chunkName="Generate Random Animation")
 
-    try :
+    try:
         # Animation des objets
         cmds.currentTime(first_keyframe)
         # Plage d'animation
@@ -59,24 +60,35 @@ def generate_random_animation(parameters, warning_message):
                             first_keyframe_value[keyframe_attribute] = keyframe_value
 
                         # Création du keyframe
-                        cmds.setKeyframe(object, attribute=keyframe_attribute, value=keyframe_value, time=new_keyframe)
+                        cmds.setKeyframe(
+                            object,
+                            attribute=keyframe_attribute,
+                            value=keyframe_value,
+                            time=new_keyframe,
+                        )
 
             # Donne les valeurs du 1er keyframe au dernier
             for keyframe_attribute, keyframe_value in first_keyframe_value.items():
-                cmds.setKeyframe(object, attribute=keyframe_attribute, value=keyframe_value, time=duration)
+                cmds.setKeyframe(
+                    object,
+                    attribute=keyframe_attribute,
+                    value=keyframe_value,
+                    time=duration,
+                )
 
-    finally :
+    finally:
         # Fin du Undo
         cmds.undoInfo(closeChunk=True)
     print(cmds.undoInfo(query=True, undoName=True))
-    #cmds.outlinerEditor("outlinerPanel1", edit=True, refresh=True)
+    message("done")
+    # cmds.outlinerEditor("outlinerPanel1", edit=True, refresh=True)
 
     # Jouer l'animation (trouver comment bien looper)
-    #cmds.play(forward = True)
+    # cmds.play(forward = True)
+
 
 def get_objects():
     """Fonction qui récupère les objets sélectionnés."""
 
     objects = cmds.ls(type="transform", selection=True)
     return objects
-

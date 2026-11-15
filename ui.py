@@ -1,4 +1,3 @@
-
 from PySide6.QtWidgets import (
     QWidget,
     QPushButton,
@@ -10,14 +9,14 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QDoubleSpinBox,
     QMessageBox,
-    QGridLayout
+    QGridLayout,
 )
 from PySide6.QtCore import Qt
 import animator
 
 
 class RandomAnimatorGenerator(QWidget):
-    
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Random Animator Generator")
@@ -45,7 +44,7 @@ class RandomAnimatorGenerator(QWidget):
             # Valeur par défaut des spinboxes
             spinbox.setValue(values[2])
 
-            # Nombre de rangé et de colonnes 
+            # Nombre de rangé et de colonnes
             row = element // 3
             col = element % 3
 
@@ -59,15 +58,27 @@ class RandomAnimatorGenerator(QWidget):
             self.spinboxes[f"{parameter_group_title}_{name}"] = spinbox
 
         # Animation timing a une plus petite box jsp si c'est la meilleure façon de faire ça mais sa fonctionne
-        if parameter_group_title == "Animation Timing" :
+        if parameter_group_title == "Animation Timing":
             group_box.setFixedHeight(100)
 
         return group_box
-    
-    def warning_message(self):
-        """Fonction qui affiche un message d'avertissement."""
-        QMessageBox.warning(self, "WARNING", "Please select at least one object in the outliner.")
 
+    def message(self, message_type):
+        """Fonction qui affiche un message selon le type."""
+
+        if message_type == "warning":
+            QMessageBox.warning(
+                self,
+                "WARNING",
+                "Please select at least one object in the outliner."
+            )
+
+        elif message_type == "done":
+            QMessageBox.information(
+                self,
+                "Animation Generated",
+                "Animation generated successfully."
+            )
 
     def send_parameters_value(self):
         """Fonction qui donne en paramètres les valeurs des paramètres des spinboxes et la fonction warning_message à animator.py."""
@@ -79,13 +90,7 @@ class RandomAnimatorGenerator(QWidget):
             parameters[name] = spinbox.value()
 
         # Appelle la fonction generate random animation dans animator et lui passe la liste en parametres
-        animator.generate_random_animation(parameters, self.warning_message)
-        QMessageBox.information(
-        self,
-        "Animation Generated",
-        "Animation generated successfully."
-        )
-
+        animator.generate_random_animation(parameters, self.message)
 
     def create_ui(self):
 
@@ -98,25 +103,34 @@ class RandomAnimatorGenerator(QWidget):
         # Donne les noms des groupes et des paramètres
         # Puis défini les valeur [Min, Max, Defaut]
         groups = {
-            "Animation Timing" : {
+            "Animation Timing": {
                 "Duration (Frames):": [24, 1000, 100],
-                "Step (Frames):":[1, 500, 30]
+                "Step (Frames):": [1, 500, 30],
             },
-
-            "Translate Parameters" : {
-                "min x:":[-1000, 1000, -5], "min y:":[-1000, 1000, -5], "min z:":[-1000, 1000, -5],
-                "max x:":[-1000, 1000, 5], "max y:":[-1000, 1000, 5], "max z:":[-1000, 1000, 5]
+            "Translate Parameters": {
+                "min x:": [-1000, 1000, -5],
+                "min y:": [-1000, 1000, -5],
+                "min z:": [-1000, 1000, -5],
+                "max x:": [-1000, 1000, 5],
+                "max y:": [-1000, 1000, 5],
+                "max z:": [-1000, 1000, 5],
             },
-
-            "Rotate Parameters" : {
-                "min x:":[-360, 360, -180], "min y:":[-360, 360, -180], "min z:":[-360, 360, -180],
-                "max x:":[-360, 360, 180], "max y:":[-360, 360, 180], "max z:":[-360, 360, 180]
+            "Rotate Parameters": {
+                "min x:": [-360, 360, -180],
+                "min y:": [-360, 360, -180],
+                "min z:": [-360, 360, -180],
+                "max x:": [-360, 360, 180],
+                "max y:": [-360, 360, 180],
+                "max z:": [-360, 360, 180],
             },
-
-            "Scale Parameters" : {
-                "min x:":[1, 500, 1], "min y:":[1, 500, 1], "min z:":[1, 500, 1],
-                "max x:":[1, 500, 2], "max y:":[1, 500, 2], "max z:":[1, 500, 2]
-            }
+            "Scale Parameters": {
+                "min x:": [1, 500, 1],
+                "min y:": [1, 500, 1],
+                "min z:": [1, 500, 1],
+                "max x:": [1, 500, 2],
+                "max y:": [1, 500, 2],
+                "max z:": [1, 500, 2],
+            },
         }
 
         for element, (parameter_group_title, names) in enumerate(groups.items()):
@@ -129,16 +143,8 @@ class RandomAnimatorGenerator(QWidget):
         duration.valueChanged.connect(step.setMaximum)
         step.setMaximum(duration.value())
 
-
         self.create_button = QPushButton("Generate")
-        #self.create_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        # self.create_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.create_button.clicked.connect(self.send_parameters_value)
 
         layout.addWidget(self.create_button)
-
-
-
-
-
-
-        
