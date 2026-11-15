@@ -144,7 +144,6 @@ class RandomAnimatorGenerator(QWidget):
         step.setMaximum(duration.value())
 
         self.create_button = QPushButton("Generate")
-        # self.create_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.create_button.clicked.connect(self.send_parameters_value)
 
         layout.addWidget(self.create_button)

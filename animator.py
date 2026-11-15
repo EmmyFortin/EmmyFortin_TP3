@@ -24,9 +24,10 @@ def generate_random_animation(parameters, message):
     # Pour CTRL + Z, mets les modifications dans le même Undo
     cmds.undoInfo(openChunk=True, chunkName="Generate Random Animation")
 
+    # Animation des objets
     try:
-        # Animation des objets
         cmds.currentTime(first_keyframe)
+
         # Plage d'animation
         cmds.playbackOptions(min=first_keyframe, max=duration)
 
@@ -92,7 +93,8 @@ def generate_random_animation(parameters, message):
     # Jouer l'animation (trouver comment bien looper)
     cmds.play(forward = True)
 
-    #message("done")
+    # Voir si je le garde ou non
+    message("done")
 
 
 def get_objects():
