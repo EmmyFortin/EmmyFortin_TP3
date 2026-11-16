@@ -91,7 +91,7 @@ def generate_random_animation(parameters, message):
     print(cmds.undoInfo(query=True, undoName=True))
 
     # Jouer l'animation (trouver comment bien looper)
-    cmds.play(forward = True)
+    #cmds.play(forward = True)
 
     # Voir si je le garde ou non
     message("done")
