@@ -1,13 +1,10 @@
 from PySide6.QtWidgets import (
     QWidget,
     QPushButton,
-    QVBoxLayout,
     QHBoxLayout,
-    QLineEdit,
     QLabel,
     QGroupBox,
     QSpinBox,
-    QDoubleSpinBox,
     QMessageBox,
     QGridLayout,
 )
@@ -36,6 +33,7 @@ class RandomAnimatorGenerator(QWidget):
             label = QLabel(name)
             spinbox = QSpinBox()
 
+            # Donne une taille fixe au spinboxes
             spinbox.setFixedSize(65, 30)
 
             # Set les max et min des valeurs par rapport à celles attribuer dans le dict de groups
@@ -52,12 +50,12 @@ class RandomAnimatorGenerator(QWidget):
             row_layout = QHBoxLayout()
             row_layout.addWidget(label)
             row_layout.addWidget(spinbox)
-
             group_layout.addLayout(row_layout, row, col, Qt.AlignCenter)
+
             # Création de la strcture des noms des paramètres
             self.spinboxes[f"{parameter_group_title}_{name}"] = spinbox
 
-        # Animation timing a une plus petite box jsp si c'est la meilleure façon de faire ça mais sa fonctionne
+        # Animation timing a une plus petite box
         if parameter_group_title == "Animation Timing":
             group_box.setFixedHeight(100)
 
@@ -81,7 +79,7 @@ class RandomAnimatorGenerator(QWidget):
             )
 
     def send_parameters_value(self):
-        """Fonction qui donne en paramètres les valeurs des paramètres des spinboxes et la fonction warning_message à animator.py."""
+        """Fonction qui donne en paramètres les valeurs des paramètres des spinboxes et la fonction message au animator.py."""
 
         # Liste des parametres
         parameters = {}
@@ -93,6 +91,7 @@ class RandomAnimatorGenerator(QWidget):
         animator.generate_random_animation(parameters, self.message)
 
     def create_ui(self):
+        """Fonction qui créer le UI."""
 
         layout = QGridLayout(self)
 

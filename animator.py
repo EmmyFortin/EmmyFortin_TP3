@@ -87,13 +87,8 @@ def generate_random_animation(parameters, message):
     finally:
         # Fin du Undo
         cmds.undoInfo(closeChunk=True)
-
-    print(cmds.undoInfo(query=True, undoName=True))
-
-    # Jouer l'animation (trouver comment bien looper)
-    #cmds.play(forward = True)
-
-    # Voir si je le garde ou non
+        
+    # Appelle le QMessageBox de type done
     message("done")
 
 

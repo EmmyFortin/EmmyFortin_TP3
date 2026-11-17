@@ -17,12 +17,14 @@ importlib.reload(animator)
 
 
 def main():
-    global tool_window
+    global animator_tool_window
+
     try:
-        tool_window.close()
+        animator_tool_window.close()
     except Exception:
         pass
-    tool_window = ui.RandomAnimatorGenerator()
-    tool_window.show()
+
+    animator_tool_window = ui.RandomAnimatorGenerator()
+    animator_tool_window.show()
 
 main()
