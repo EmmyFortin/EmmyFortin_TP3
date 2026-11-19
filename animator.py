@@ -1,10 +1,9 @@
 import random
-import ui
 from maya import cmds
 
 
 def generate_random_animation(parameters, message):
-    """Fonction qui créer l'animation random"""
+    """Fonction qui génère l'animation random."""
 
     # Début de l'animation au keyframe 0
     first_keyframe = 0
@@ -16,12 +15,14 @@ def generate_random_animation(parameters, message):
     # Récupère les objets sélectionnés
     objects = get_objects()
 
-    # S'il n'y a pas d'objet sélectionné on appelle warning_message de ui.py
+    # S'il n'y a pas d'objet sélectionné,
+    # on appelle la fonction message() avec
+    # le type de message en paramètre de ui.py
     if not objects:
         message("warning")
         return
 
-    # Pour CTRL + Z, mets les modifications dans le même Undo
+    # Pour CTRL + Z, met les modifications dans le même Undo
     cmds.undoInfo(openChunk=True, chunkName="Generate Random Animation")
 
     # Animation des objets
@@ -34,38 +35,50 @@ def generate_random_animation(parameters, message):
         # Pour chaque objet sélectionné
         for object in objects:
 
-            # Supprmier les anciens keyframes
+            # Supprimer les anciens keyframes
             cmds.cutKey(
                 object,
-                attribute=["translate","rotate","scale"],
+                attribute=["translate", "rotate", "scale"],
                 clear=True
             )
 
             # Liste pour conserver les valeurs de départ du 1er keyframe
             first_keyframe_value = {}
 
-            # On loop dans chaque new keyframe (ajouter à chaque step jusquà la fin de l'anim)
+            # On loop dans chaque nouveau keyframe
+            # Les nouveau keyframes sont ajouter à chaque step
             for new_keyframe in range(first_keyframe, duration, step):
-                # Loop dans chaque type de transformation puis dans chaque axe
+
+                # On loop dans chaque type de transformation,
+                # puis dans chaque axe
                 for transform in ["Translate", "Rotate", "Scale"]:
                     for axis in ["x", "y", "z"]:
 
-                        # Récupère les valeurs min et max
-                        # Concatène le nom du transform (Translate, Rotate ou Scale) avec Parameters_min(ou max) et l'axe
-                        # Pour correpsondre au noms des paramètres définit pour les spinboxes (line 57)
-                        min_value = parameters[f"{transform} Parameters_min {axis}:"]
-                        max_value = parameters[f"{transform} Parameters_max {axis}:"]
+                        # Récupère les valeurs min et max,
+                        # selon la structure des noms
+                        # définie dans ui.py (ligne 56)
+                        min_value = parameters[
+                            f"{transform} Parameters_min {axis}:"
+                        ]
+                        max_value = parameters[
+                            f"{transform} Parameters_max {axis}:"
+                        ]
 
-                        # Détermine la valeur random entre min_value et max_value
+                        # Détermine la valeur random
+                        # entre min_value et max_value
                         keyframe_value = random.uniform(min_value, max_value)
 
-                        # Modifier le nom de l'attribut afin qu'il correspond à celui dans Maya
-                        # Donc nom va être : translateX
-                        keyframe_attribute = f"{transform.lower()}{axis.upper()}"
+                        # Modifier le nom de l'attribut afin
+                        # qu'il corresponde à celui dans Maya (translateX)
+                        keyframe_attribute = (
+                            f"{transform.lower()}{axis.upper()}"
+                        )
 
                         # Conserve les valeurs du 1er keyframe
                         if new_keyframe == first_keyframe:
-                            first_keyframe_value[keyframe_attribute] = keyframe_value
+                            first_keyframe_value[
+                                keyframe_attribute
+                            ] = keyframe_value
 
                         # Création du keyframe
                         cmds.setKeyframe(
@@ -76,7 +89,9 @@ def generate_random_animation(parameters, message):
                         )
 
             # Donne les valeurs du 1er keyframe au dernier
-            for keyframe_attribute, keyframe_value in first_keyframe_value.items():
+            for keyframe_attribute, keyframe_value in (
+                first_keyframe_value.items()
+            ):
                 cmds.setKeyframe(
                     object,
                     attribute=keyframe_attribute,
@@ -87,13 +102,11 @@ def generate_random_animation(parameters, message):
     finally:
         # Fin du Undo
         cmds.undoInfo(closeChunk=True)
-        
+
     # Appelle le QMessageBox de type done
     message("done")
 
-
 def get_objects():
     """Fonction qui récupère les objets sélectionnés."""
-
     objects = cmds.ls(type="transform", selection=True)
     return objects

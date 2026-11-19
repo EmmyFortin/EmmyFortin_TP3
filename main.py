@@ -6,7 +6,7 @@ absolute_folder_path = os.path.dirname(absolute_file_path)
 
 sys.path.append(absolute_folder_path)
 
-# refresh des fichiers
+# Refresh des fichiers
 import importlib
 import ui
 import animator

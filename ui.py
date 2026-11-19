@@ -22,12 +22,15 @@ class RandomAnimatorGenerator(QWidget):
         self.create_ui()
 
     def create_parameter_group(self, parameter_group_title, parameter_names):
+        """Fonction qui crée et configure un groupe de paramètres et ses paramètres dans le UI."""
 
+        # Création d'un group_box qui contiendera les paramètres
         group_box = QGroupBox(parameter_group_title)
 
-        # Set le layout
+        # Place group_box dans le QGridLayout
         group_layout = QGridLayout(group_box)
 
+        # Parcourt les paramètres pour créer leur labels et leur spinboxes
         for element, (name, values) in enumerate(parameter_names.items()):
 
             label = QLabel(name)
@@ -36,33 +39,35 @@ class RandomAnimatorGenerator(QWidget):
             # Donne une taille fixe au spinboxes
             spinbox.setFixedSize(65, 30)
 
-            # Set les max et min des valeurs par rapport à celles attribuer dans le dict de groups
+            # Définit les valeurs max et min, 
+            # selon le dictionnaire groups (ligne 107)
             spinbox.setRange(values[0], values[1])
 
-            # Valeur par défaut des spinboxes
+            # Définit la valeur par défaut des spinboxes
             spinbox.setValue(values[2])
 
-            # Nombre de rangé et de colonnes
+            # Définit le nombre de rangé et de colonnes
             row = element // 3
             col = element % 3
 
-            # Row layout pour avoir label et spinbox ensemble sur la même cellule horizontal
+            # Place le label et la spinbox côte à côte 
+            # dans une même cellule horizontal
             row_layout = QHBoxLayout()
             row_layout.addWidget(label)
             row_layout.addWidget(spinbox)
             group_layout.addLayout(row_layout, row, col, Qt.AlignCenter)
 
-            # Création de la strcture des noms des paramètres
+            # Création de la structure des noms des paramètres
             self.spinboxes[f"{parameter_group_title}_{name}"] = spinbox
 
-        # Animation timing a une plus petite box
+        # La section Animation Timing a une plus petite group_box
         if parameter_group_title == "Animation Timing":
             group_box.setFixedHeight(100)
 
         return group_box
 
     def message(self, message_type):
-        """Fonction qui affiche un message selon le type."""
+        """Fonction qui permet d'avoir différent type de message."""
 
         if message_type == "warning":
             QMessageBox.warning(
