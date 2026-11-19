@@ -1,19 +1,18 @@
 import os
 import sys
+import importlib
 
+# Ajoute le dossier des fichiers au path
 absolute_file_path = os.path.abspath(__file__)
 absolute_folder_path = os.path.dirname(absolute_file_path)
-
 sys.path.append(absolute_folder_path)
 
-# Refresh des fichiers
-import importlib
 import ui
 import animator
 
+# Recharge les modules
 importlib.reload(ui)
 importlib.reload(animator)
-
 
 
 def main():

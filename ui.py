@@ -13,6 +13,7 @@ import animator
 
 
 class RandomAnimatorGenerator(QWidget):
+    """Classe du widget Random Animator Generator."""
 
     def __init__(self):
         super().__init__()
@@ -22,9 +23,11 @@ class RandomAnimatorGenerator(QWidget):
         self.create_ui()
 
     def create_parameter_group(self, parameter_group_title, parameter_names):
-        """Fonction qui crée et configure un groupe de paramètres et ses paramètres dans le UI."""
+        """Fonction qui crée et configure un groupe de paramètres 
+        et ses paramètres dans le UI.
+        """
 
-        # Création d'un group_box qui contiendera les paramètres
+        # Création d'un group_box qui contiendra les paramètres
         group_box = QGroupBox(parameter_group_title)
 
         # Place group_box dans le QGridLayout
@@ -39,7 +42,7 @@ class RandomAnimatorGenerator(QWidget):
             # Donne une taille fixe au spinboxes
             spinbox.setFixedSize(65, 30)
 
-            # Définit les valeurs max et min, 
+            # Définis les valeurs max et min,
             # selon le dictionnaire groups (ligne 107)
             spinbox.setRange(values[0], values[1])
 
@@ -50,8 +53,8 @@ class RandomAnimatorGenerator(QWidget):
             row = element // 3
             col = element % 3
 
-            # Place le label et la spinbox côte à côte 
-            # dans une même cellule horizontal
+            # Place le label et la spinbox côte à côte
+            # dans une même cellule horizontale
             row_layout = QHBoxLayout()
             row_layout.addWidget(label)
             row_layout.addWidget(spinbox)
@@ -67,7 +70,7 @@ class RandomAnimatorGenerator(QWidget):
         return group_box
 
     def message(self, message_type):
-        """Fonction qui permet d'avoir différent type de message."""
+        """Fonction qui permet l'affichage d'un message selon son type."""
 
         if message_type == "warning":
             QMessageBox.warning(
@@ -84,15 +87,20 @@ class RandomAnimatorGenerator(QWidget):
             )
 
     def send_parameters_value(self):
-        """Fonction qui donne en paramètres les valeurs des paramètres des spinboxes et la fonction message au animator.py."""
+        """Fonction qui transmet en paramètres les valeurs 
+        des spinboxes et la fonction message à animator.py.
+        """
 
-        # Liste des parametres
+        # Liste des paramètres
         parameters = {}
 
+        # Associe chaque nom de paramètre à la valeur de sa spinbox.
         for name, spinbox in self.spinboxes.items():
             parameters[name] = spinbox.value()
 
-        # Appelle la fonction generate random animation dans animator et lui passe la liste en parametres
+        # Appel generate_random_animation()
+        # avec la liste de paramètres
+        # et la fonction message dans animator.py
         animator.generate_random_animation(parameters, self.message)
 
     def create_ui(self):
@@ -100,12 +108,12 @@ class RandomAnimatorGenerator(QWidget):
 
         layout = QGridLayout(self)
 
-        # Création dictionnaire des spinbox
+        # Création du dictionnaire des spinbox
         self.spinboxes = {}
 
-        # Dictionnaire des groups box
+        # Dictionnaire des groups_box
         # Donne les noms des groupes et des paramètres
-        # Puis défini les valeur [Min, Max, Defaut]
+        # Puis définis les valeurs [Min, Max, Defaut]
         groups = {
             "Animation Timing": {
                 "Duration (Frames):": [24, 1000, 100],
@@ -137,16 +145,22 @@ class RandomAnimatorGenerator(QWidget):
             },
         }
 
-        for element, (parameter_group_title, names) in enumerate(groups.items()):
-            group_box = self.create_parameter_group(parameter_group_title, names)
+        # Parcourt les groupes pour les créer et les ajouter au layout
+        for element, (parameter_group_title, names) in enumerate(
+            groups.items()
+        ):
+            group_box = self.create_parameter_group(
+                parameter_group_title, names
+            )
             layout.addWidget(group_box, element, 0)
 
-        # Empeche le step de dépasser la duration
+        # Empêche le step de dépasser la duration
         duration = self.spinboxes["Animation Timing_Duration (Frames):"]
         step = self.spinboxes["Animation Timing_Step (Frames):"]
         duration.valueChanged.connect(step.setMaximum)
         step.setMaximum(duration.value())
 
+        # Crée le bouton
         self.create_button = QPushButton("Generate")
         self.create_button.clicked.connect(self.send_parameters_value)
 

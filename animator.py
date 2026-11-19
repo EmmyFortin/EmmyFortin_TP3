@@ -45,12 +45,12 @@ def generate_random_animation(parameters, message):
             # Liste pour conserver les valeurs de départ du 1er keyframe
             first_keyframe_value = {}
 
-            # On loop dans chaque nouveau keyframe
+            # Parcourt chaque nouveau keyframe
             # Les nouveau keyframes sont ajouter à chaque step
             for new_keyframe in range(first_keyframe, duration, step):
 
-                # On loop dans chaque type de transformation,
-                # puis dans chaque axe
+                # Parcourt chaque type de transformation,
+                # puis chaque axe
                 for transform in ["Translate", "Rotate", "Scale"]:
                     for axis in ["x", "y", "z"]:
 
